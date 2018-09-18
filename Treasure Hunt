@@ -32,17 +32,13 @@ def makeGrid(grid):#function used to maake the grid
             print("You must only enter 8, 10 or 12")
             size= input("Type the size of your grid: 8, 10 or 12:")
         #asking the user to input the size of their grid
-   
-    
-    
+          
     #banditsChests()
     return grid, size, row, column
-
 
 def PrintGrid(grid):#This function prints the grid
     for row in grid:
         print(" ".join(row))#joins the rows and columns together to make the grid
-
 
 def GameRules():#FUnction outputting the game rules
     print("Treasure Hunt Game Rules\n")#outputing thE rules of the game
@@ -86,8 +82,6 @@ else:
     print ("ERROR")
     Menu ()
 
-
-
 #function picking random rows and returning it so it can be used later
 #using the grid variable so it works no matter what size the grid is
 def randomRow(grid):
@@ -95,7 +89,6 @@ def randomRow(grid):
 #the same as above but for columns
 def randomColumn (grid):
     return random.randint (0, len(grid) -1)
-
 
 #Function to add treasure chests randomly to grid
 def placeChest(chest, grid):
@@ -175,11 +168,8 @@ def playerGuesses (grid, bandits, chest, row, column):
         print("No. treasure chests:", chest)
         print ("Total coins:", Coins)
         PlayerMove()
-        WinLose ()
-        
-
-        
-            
+        WinLose ()      
+         
         #ensuring the user can only land on each chest 3 times
         if grid[newRow][newCol] and grid[row][column] == "T":
             grid [Row][Column] = "1"
@@ -218,9 +208,7 @@ def playerGuesses (grid, bandits, chest, row, column):
             #changing the old position back to the grid (a T)
             ##grid[startRow][startCol] ="T" #"_"??
             ##PlayerMove()
-          
-            
-            
+                                 
         #to check if the land on a bandit
         elif grid[row][column] and grid[newRow][newCol] == "B":
             print ("\nOh no! You've found a bandit!")
@@ -266,7 +254,6 @@ def playerGuesses (grid, bandits, chest, row, column):
                 #PlayerMove()
 
             return newRow, newCol
-
 
               
 PlayerMove()
