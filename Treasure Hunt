@@ -1,0 +1,295 @@
+#Treasure hunt game
+#By Esinam :D
+
+#importing random to use within later functions
+import random, sys
+
+Coins = 0
+grid = []
+#def banditsChests ():
+    
+    #return bandits, chest
+
+def makeGrid(grid):#function used to maake the grid
+    print ("Type the number for the level you want: \n")
+    print("Easy:8x8\n")
+    print ("Medium:10x10\n")
+    print ("Hard:12x12\n")#telling the user their grid size options
+    #grid=[] #using an empty list to represent the grid 
+    global size
+    size= input("Type the size of your grid: 8, 10 or 12:")#asking the user to input the size of their grid
+            
+    if size == "8" or size == "10" or size == "12":
+        size = int(size)#converting size into an integer
+        for row in range (size):#creates a row at the length of the user's choice (the size variable)
+            grid.append([])#adds the blank list to each row 
+            for column in range (size):
+                grid[row].append("_")
+    elif size !="8" or size !="10" or size !="12":
+        size = int(size)
+        while size !=8 or size !=10 or size !=12:
+            #using a while loop for any error
+            print("You must only enter 8, 10 or 12")
+            size= input("Type the size of your grid: 8, 10 or 12:")
+        #asking the user to input the size of their grid
+   
+    
+    
+    #banditsChests()
+    return grid, size, row, column
+
+
+def PrintGrid(grid):#This function prints the grid
+    for row in grid:
+        print(" ".join(row))#joins the rows and columns together to make the grid
+
+
+def GameRules():#FUnction outputting the game rules
+    print("Treasure Hunt Game Rules\n")#outputing thE rules of the game
+    print("The aim of this game is to collect 100 coins from the treasure chests hidden in the grid.")
+    print("You must aviod the bandits who are also hiding in the grid.")
+    print("If you land on a bandit then you lose all you coins and your score resets to 0.")
+    print("You can only move in vertical and horizontal directions.")
+    print("\nYou win if you have collected 100 coins.\n")
+    print("You lose if you haven't collect 100 coins and there are no more treasure chests in the game.\n")
+    print("Let's play!")
+
+def Menu():#funtction for the menu
+    print ("Welcome to the treasure hunt game!\n")#outputting an welcome message
+
+    Choice =input("Type if you want to 1 to play or 2 to exit:\n")#imputing the user's choice as a number 
+    if Choice == "1": #using an if statement to determine the user's chosen outcome
+        print ("Let's play!\n")# if they choose 1 it outputs a message if the want to play
+        GameRules()#loading the funtion for the game rules
+        makeGrid (grid)
+    elif Choice == "2" :
+        #if they type 2 it closes the whole program as they have chosen to exit
+        sys.exit("You have exited the game")
+    else:
+        print("error")#an error message if they enter any other character 
+        Menu()#reloads the menu if user enters an invalid number i.e. not 1 or 2
+
+Menu ()
+
+#using a variable so the user can enter the number of TCs and Bs they want
+print("Press 1 (HARD) if you would like to enter the number of chests and bandits in your game. \n")
+print ("Press 2 (EASY) if you would like the defalut number of chests and bandits (10 chests 5 bandits)")
+BandTchoice= int(input("Press 1 or 2"))
+#if statement for inputing the number of TCs and Bs if they want or just leaving them at default
+if BandTchoice == 1:
+    chest = int(input("How many chests would you like?"))
+    bandits = int(input("How many bandits would you like?"))
+elif BandTchoice == 2:
+    chest= 10
+    bandits=5
+else:
+    print ("ERROR")
+    Menu ()
+
+
+
+#function picking random rows and returning it so it can be used later
+#using the grid variable so it works no matter what size the grid is
+def randomRow(grid):
+    return random.randint(0, len(grid) - 1)
+#the same as above but for columns
+def randomColumn (grid):
+    return random.randint (0, len(grid) -1)
+
+
+#Function to add treasure chests randomly to grid
+def placeChest(chest, grid):
+    #using a for loop through each chest
+    for chest in range(chest):
+        '''it says chest is not defined ??'''
+        #randomly pick row & column
+        row= randomRow(grid)
+        column= randomColumn(grid)
+        #check square is not occupied
+        while grid[row][column] != "_":
+            row= randomRow(grid)
+            column= randomColumn(grid)
+        #add chest to the grid
+        grid[row][column]="T"
+    return chest, grid, row, column
+
+#using the same function above but for the bandit instead
+def placeBandit (bandits, grid):
+    '''says bandits is not defined ??'''
+    for bandits in range (bandits):
+        row= randomRow (grid)
+        column= randomColumn (grid)
+        while grid [row][column] != "_":
+            row =randomRow (grid)
+            column= randomColumn (grid)
+        grid[row][column] = "B"
+    return bandits, grid, row, column
+
+#calling the placeBandit and placeChest function to put on to the grid
+print()
+placeChest(chest, grid)
+placeBandit (bandits, grid)
+
+#starting positions (coordinates) for the player
+startRow= size-1
+startCol= 0
+
+#function for player's position
+def player ():
+    grid[startRow][startCol]="X"
+
+
+#function for moving the player 
+def PlayerMove ():
+    #using a global variable so that the variable can be used throuight out the code
+    global startRow
+    global startCol
+
+    #to reset the player's position
+    grid[startRow][startCol] = "_"
+
+#function for allowing the user to win or lose
+def WinLose (): 
+    if Coins >= 100 :
+        print ("You have won!")
+        Menu ()
+    elif Coins != 100 and chest== 0:
+        print ("You have lost!")
+        Menu ()
+    else:
+        print ()
+        
+def playerGuesses (grid, bandits, chest, row, column):
+    global Coins
+    #loop for allowing guesses
+    for guess in range (20):
+        #inputing the player's new position(their guess)
+        print("Rows and columns start at 0\n")
+        print("Input your next move")
+        #using new variables for the players next positions
+        newRow = int(input("Row: "))
+        newCol = int(input("Column: "))
+        #printing the number of guesses, bandits, chests and coins the player has each time
+        print ("\nGuesses so far:", guess+1)
+        print ("No. bandits:", bandits)
+        print("No. treasure chests:", chest)
+        print ("Total coins:", Coins)
+        PlayerMove()
+        WinLose ()
+        
+
+        
+            
+        #ensuring the user can only land on each chest 3 times
+        if grid[newRow][newCol] and grid[row][column] == "T":
+            grid [Row][Column] = "1"
+            print ("\nWell done! You've found a treasure chest!")
+            print ("10 coins will be added to your total")
+            #adds 10 coins the their coin total if they land on a chest
+            Coins = Coins+10
+        elif grid[newRow][newCol] and grid [row][column] == "1":
+            grid[Row][Column] = "2"
+            Coins= Coins+10
+            print ("\nWell done! You've found a treasure chest!")
+            print ("10 coins will be added to your total")
+        elif grid[newRow][newCol] and grid [row][column] == "2":
+            Coins = Coins +10
+            print ("\nWell done! You've found a treasure chest!")s 
+            print ("10 coins will be added to your total")
+            #changing the tresure chest to a bandit after the thrid visit
+            grid[Row][Column]= "B"
+            #adding one to the bandits
+            bandits = bandits +1
+            #removing one chest
+            chest = chest - 1
+
+            #changing the old position back to the grid (a T)
+            #grid[startRow][startCol] ="T" #"_"??
+            #PlayerMove()
+            #runs these functions to keep guesses continuous
+            startRow= newRow
+            startCol=newCol
+            
+            grid[newRow][newCol] = "X"
+            PrintGrid (grid)
+            #changing the current position to the old position
+            ##startRow= newRow
+            ##startCol=newCol
+            #changing the old position back to the grid (a T)
+            ##grid[startRow][startCol] ="T" #"_"??
+            ##PlayerMove()
+          
+            
+            
+        #to check if the land on a bandit
+        elif grid[row][column] and grid[newRow][newCol] == "B":
+            print ("\nOh no! You've found a bandit!")
+            print ("Your coins reset to 0")
+            #resetting coins to 0 when they land on bandit
+            Coins=0
+            grid[newRow][newCol] = "X"
+            PrintGrid (grid)
+            startRow= newRow
+            startCol=newCol
+            grid[startRow][startCol] ="B" #"_"???
+            #PlayerMove()
+            
+        #else statement for incorrect guesses
+        else:
+            #for guesses off the grid
+            if newRow<0 or newRow>size-1 or newCol<0 or newCol>size:
+                print ("\nThat's not on the grid! Guess again")
+                grid [newRow][newCol] = grid[startRow][startCol]
+                grid[newRow][newCol] = "X"
+                PrintGrid (grid)
+                grid[startRow][startCol] ="_" 
+                #PlayerMove()
+                
+            #when the guess is the same position as the previous guess
+            elif grid[newRow][newCol] == grid[startRow][startCol]:
+                print("\nYou're there already! Guess again")
+                grid[newRow][newCol] = "X"
+                PrintGrid (grid)
+                #startRow= newRow
+                #startCol=newCol
+                grid[startRow][startCol] ="_" 
+                #PlayerMove()
+                
+            #for none of the above/ guesses that land on nothing
+            else:
+                print ("\nYou didn't find anything")
+                grid[newRow][newCol] = "X"
+                PrintGrid (grid)
+                startRow= newRow
+                startCol=newCol
+                grid[startRow][startCol] ="_" 
+                #PlayerMove()
+
+            return newRow, newCol
+
+
+              
+PlayerMove()
+player ()
+#hiding the bandits and chests
+#second grid
+hide= False
+if hide == True:
+    grid=[]
+    for row in range (size):
+        grid.append([])
+        for column in range (size):
+            grid[row].append("_")
+
+    startRow=size-1
+    startCol=0
+
+    grid[startRow][startCol]="X"
+
+    for row in grid:
+        print(" ".join(row))
+        
+else:
+    PrintGrid(grid)
+
+playerGuesses (grid, bandits, chest, row, column)
