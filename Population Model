@@ -1,0 +1,257 @@
+#Population model
+#by Esinam :D
+
+#importing os and random to be used later in the code
+import os,random
+
+#setting values if the user doesnt input any
+Juveniles = 10
+Adults= 10
+Seniles= 10
+SurvJuv= 1
+SurvAdu= 1
+SurvSen= 0
+BirthRate= 2
+GenNum= 5
+
+#welcome messages
+print ("POPULATION MODEL\n")
+print ("Welcome the Population model!")
+print ("-This model consists of only females")
+print ("-There are 3 types of individuals:")
+print ("    - Juveniles \n    - Adults \n    - Seniles\n")
+
+
+#function for setting the gen 0 values
+def GenZero ():
+    global  Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum
+    #asking the user what values they want using integer statements
+    print ("Input the number of individuals in generation 0")
+    Juveniles = int(input("Juveniles:"))
+    Adults = int(input("Adults:"))
+    Seniles = int(input("Seniles:"))
+    print("\nInput the survival rates for the individuals. It must be between 0  and 1")
+    #using a flaot so that the user can input a decimal number
+    SurvJuv= float(input("Juvenile's survival rate:"))
+    SurvAdu= float(input("Adult's survial rate:"))
+    SurvSen= float(input("Senile's survival rate:"))
+    #using a while loop ton enuser they only input numbers between 1 and 0
+    while (SurvJuv >1 or SurvJuv<0) or(SurvAdu >1 or SurvAdu<0) or (SurvSen >1 or SurvSen<0):
+        print("\nSurvival rates must all be between 0  and 1")
+        SurvJuv= float(input("Juvenile's survival rate:"))
+        SurvAdu= float(input("Adult's survial rate:"))
+        SurvSen= float(input("Senile's survival rate:"))
+
+    BirthRate= int(input("\nInput the birth rate:"))
+    print("\nThe number of generations must be between 5 and 25")
+    GenNum= int(input("Input the number of generations:"))
+    #using a while loop if they enter a number that is not between 5 and 25
+    while GenNum <5 or GenNum >25:
+        print("\nThe number of generations must only be between 5 and 25")
+        GenNum= int(input("Input the number of generations:"))
+    
+    print("\n You will be taken to the menu now\n")
+    print("--------------------------------------\n")
+    #returning the values to be used lated on in the function
+    return Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum
+
+#function displaying the generation zero values
+#putting the parameters i'm going to use in this function (they were returned earlier)
+def DisplayGenZero (Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum):
+    #inital generation grid (gen zero)
+    print("|  Greenfly Type  |  Initial Population  |  Survival rate  |")
+    print("|    Juveniles    |        ",Juveniles,"          |       ",SurvJuv,"       |")
+    print("|    Adults       |        ",Adults,"          |       ",SurvAdu,"       |")
+    print("|    Seniles      |        ",Seniles,"          |       ",SurvSen,"       |")
+    print ()
+    print ("The birth rate is:",BirthRate)
+    print ("There are",GenNum,"geneartions")
+
+    print("\n You will be taken to the menu now\n")
+    print("--------------------------------------\n")
+    #retunring the values to be used again
+    return Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum
+
+#putting the parameters in the function
+def RunModel (Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum):
+    #grid showing the generations and total populations
+    print("The model will start running from generation 0\n")
+    print ("There will be",GenNum," generations")
+
+    #the titles in the grid
+    print("|    Generation    |    Juveniles    |    Adults    |    Seniles    |    Total    |")
+
+    #using a variable to output a number in the generation column
+    num=0
+    Pop= Juveniles + Adults + Seniles
+
+    #outputing generation 0 first
+    print("|       ",round(num,2),"       |       ",round(Juveniles,2),"        |       ",round(Adults,2),"        |        ",round(Seniles,2),"        |        ",round(Pop,2),"        |")
+
+    #using a for loop to print the new generations
+    for year in range (GenNum):
+        #creating new variables for the new individuals
+        JuvenilesNew =  Adults *BirthRate
+        AdultsNew = Juveniles*SurvJuv
+        SenilesNew = Adults*SurvAdu
+        TotalPop= JuvenilesNew + AdultsNew + SenilesNew
+        num=num+1
+
+        #printing the grid which shows the generations
+        print("|       ",round(num,2),"       |       ",round(JuvenilesNew,2),"        |       ",round(AdultsNew,2),"        |        ",round(SenilesNew,2),"        |        ",round(TotalPop,2),"        |")
+
+        
+        #changing the previous generation values as the old one so that 2 values can be stored
+        Juveniles=JuvenilesNew
+        Adults=AdultsNew
+        Seniles=SenilesNew
+
+
+    print("\n You will be taken to the menu now\n")
+    print("--------------------------------------\n")
+    return TotalPop
+
+
+#function for exporting data
+def exporting ():
+    global  Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum
+    print("Here you can export your data")
+    fileName = input ("Input the file name:")
+    #using an while statement loop for whenever the filename exists already 
+    while os.path.isfile(fileName+".txt"):
+        #creating a variable for the users choice (whether or not to overwrite
+        overwrite=input("This filename already exists, do you want to overwrite it?\nPut Y for yes and N for no:")
+        #using an if statement do determine what to do depening on their choice
+        if overwrite =="Y" or overwrite =="y":
+            fileName=fileName
+            print("The file has been overwritten")
+            #using a break so that it doesnt keep asking to overwrite
+            break
+        elif overwrite == "N" or overwrite== "n":
+            #allowing them to input a new filename
+            fileName=input("Enter a new filename:")
+        else:
+            print("ERROR")
+            exporting ()
+        
+    #putting all the values into a list
+    data=['Juveniles',str(Juveniles),'Adults', str(Adults), 'Seniles',str(Seniles),"SurvJuv",str(SurvJuv), "SurvAdu", str(SurvAdu), "SurvSen", str(SurvSen),"BirthRate", str(BirthRate),"GenNum", str(GenNum)]
+    #converting the data into a text file
+    with open (fileName+'.txt', mode = "w", encoding = "utf-8") as my_file:
+        for item in data:
+            my_file.write(item + "\n")
+
+
+    print("\n You will be taken to the menu now\n")
+    print("--------------------------------------\n")
+
+
+#function for the disease trigger point
+def DiseaseModel (Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum):#, TotalPop):
+    #setting disease trigger
+    print("The disease triggerpoint willaffect the seniles and juveniles only")
+    print("Ther trigger point is the point at which the disease affects the totoal population")
+    #variable for the user's chosen point
+    disease = int(input ("Enter your total diease trigger point:"))
+
+    #grid showing the generations and total populations
+    print("The model will start running from generation 0\n")
+    print("The trigger point affect the population randomly\n")
+    print ("There will be",GenNum," generations")
+    #choosing a random percentage using float
+    trigger= random.uniform(0.2,0.5)
+
+    #the titles in the grid
+    print("|    Generation    |    Juveniles    |    Adults    |    Seniles    |    Total    |")
+
+    #using a variable to output a number in the generation column
+    num=0
+    Pop= Juveniles + Adults + Seniles
+
+    #outputing generation 0 first
+    print("|     ",round(num,2),"     |     ",round(Juveniles,2),"      |     ",round(Adults,2),"      |      ",round(Seniles,2),"      |      ",round(Pop,2),"      |")
+
+    #using a for loop to print the new generations
+    for year in range (GenNum):
+        #creating new variables for the new individuals
+        JuvenilesNew =  Adults *BirthRate
+        AdultsNew = Juveniles*SurvJuv
+        SenilesNew = Adults*SurvAdu
+        TotalPop= JuvenilesNew + AdultsNew + SenilesNew
+        num=num+1
+
+        if TotalPop > disease:
+            JuvenilesNew =  Adults *BirthRate*trigger
+            SenilesNew = Adults*SurvAdu*trigger
+        else:
+            JuvenilesNew =  Adults *BirthRate
+            AdultsNew = Juveniles*SurvJuv
+            SenilesNew = Adults*SurvAdu
+            TotalPop= JuvenilesNew + AdultsNew + SenilesNew
+
+
+        #printing the grid which shows the generations
+        print("|     ",round(num,2),"     |     ",round(JuvenilesNew,2),"      |     ",round(AdultsNew,2),"      |      ",round(SenilesNew,2),"      |      ",round(TotalPop,2),"      |")
+
+        
+        #changing the previous generation values as the old one so that 2 values can be stored
+        Juveniles=JuvenilesNew
+        Adults=AdultsNew
+        Seniles=SenilesNew
+
+
+    print("\n You will be taken to the menu now\n")
+    print("--------------------------------------\n")
+    return TotalPop
+  
+ #Function for Menu
+def MainMenu ():
+    #menu options
+    print ("Options:")
+    print ("1. Set Generation 0 values")
+    print ("2. Display Generation 0 values")
+    print ("3. Run the model")
+    print ("4. Export Data")
+    print ("5. Run model with disease")
+    print ("6. Exit\n")
+
+    #using an if statement for the user's choice
+    MenuChoice =input("Please input the number of your chosen option:\n")
+    if MenuChoice == "1":
+        print ("\nSetting Generation 0 Values")
+        #function for setting the values
+        GenZero ()
+        #relaoding menu
+        MainMenu ()
+    elif MenuChoice == "2":
+        print ("\nGeneration 0 Values")
+        #function displaying the values
+        DisplayGenZero (Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum)
+        #reloading the menu
+        MainMenu ()
+    elif MenuChoice == "3":
+        print ("\nRunning Model")
+        #function to run the model
+        RunModel (Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum)
+        MainMenu ()
+    elif MenuChoice == "4":
+        print ("\nExporting Data")
+        #function for exporting the data
+        exporting ()
+        MainMenu ()
+    elif MenuChoice == "5":
+        print ("\nRunning the Model With the Disease Trigger")
+        #funtion for disease trigger
+        DiseaseModel (Juveniles, Adults, Seniles, SurvJuv, SurvAdu, SurvSen, BirthRate, GenNum)#, TotalPop)
+        MainMenu ()
+    elif MenuChoice == "6":
+        print ("You have chosen to exit")
+        print ()
+    else:
+        print ("\nERROR\n")
+        print ("Please enter the correct number\n")
+        print ("-----------------------------------\n")
+        #reloading the menu if the input any other value
+        MainMenu ()
+
+MainMenu ()
